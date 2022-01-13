@@ -38,6 +38,10 @@ const indexHtml = `<!DOCTYPE html>
       <pre id="disk"></pre>
     </section>
     <section>
+      <h2>sensors</h2>
+      <pre id="sensors"></pre>
+    </section>
+    <section>
       <h2>monero.log</h2>
       <pre id="monerolog"></pre>
     </section>
@@ -98,6 +102,7 @@ async function serveHttp(conn: Deno.Conn) {
             uptime: await exec(["uptime"]),
             memory: await exec(["free", "-h"]),
             disk: await exec(["df", "-h"]),
+            sensors: await exec(["sensors"]),
             monerolog: await exec(["tail", "/var/log/monero/monero.log"]),
           }),
           {
