@@ -30,6 +30,10 @@ const indexHtml = `<!DOCTYPE html>
       <pre id="uptime"></pre>
     </section>
     <section>
+      <h2>mpstat</h2>
+      <pre id="cpu"></pre>
+    </section>
+    <section>
       <h2>free -h</h2>
       <pre id="memory"></pre>
     </section>
@@ -100,6 +104,7 @@ async function serveHttp(conn: Deno.Conn) {
           JSON.stringify({
             uname: await exec(["uname", "-a"]),
             uptime: await exec(["uptime"]),
+            cpu: await exec(["mpstat"]),
             memory: await exec(["free", "-h"]),
             disk: await exec(["df", "-h"]),
             sensors: await exec(["sensors"]),
