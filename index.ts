@@ -20,6 +20,9 @@ const indexHtml = `<!DOCTYPE html>
     overflow: auto;
   }
   @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+    }
     body {
       background-color: #21252B;
       color: #DCDCDC;
