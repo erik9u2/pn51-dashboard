@@ -19,7 +19,7 @@ const indexHtml = `<!DOCTYPE html>
     <h1>PN51 Dashboard</h1>
     <label>
       Timeout:
-      <input value="2000" id="timeout">
+      <input value="5000" id="timeout">
     </label>
   </main>
   <script>
@@ -37,10 +37,11 @@ const indexHtml = `<!DOCTYPE html>
             el.innerHTML = json[key];
           }
         }
-        const defaultTimeout = 2000;
+        const minTimeout = 1000;
+        const defaultTimeout = 5000;
         const timeout = document.getElementById("timeout").value;
         const timeoutInt = parseInt(timeout, 10) || defaultTimeout;
-        setTimeout(refresh, Math.max(defaultTimeout, timeoutInt));
+        setTimeout(refresh, Math.max(minTimeout, timeoutInt));
       };
       refresh();
     }, false);
