@@ -6,11 +6,29 @@ const indexHtml = `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PN51 Dashboard</title>
   <style>
-  pre {
-    background-color: #eee;
-    border: 1px solid #ccc;
+  * {
+    background-color: inherit;
+    color: inherit;
+  }
+  input, pre {
     padding: 5px;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    border-radius: 5px;
+  }
+  pre {
     overflow: auto;
+  }
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #21252B;
+      color: #DCDCDC;
+    }
+    input, pre {
+      border: 1px solid #7E8083;
+      background-color: #282C34;
+      border-radius: 5px;
+    }
   }
   </style>
 </head>
