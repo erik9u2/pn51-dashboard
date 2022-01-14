@@ -71,6 +71,10 @@ async function serveHttp(conn: Deno.Conn): Promise<void> {
         diskUsage: await exec("df -h"),
         sensors: await exec("sensors"),
         moneroLog: await exec("tail /var/log/monero/monero.log"),
+        sshBruteForceLog: await exec(
+          "grep sshd.*Failed /var/log/auth.log | less"
+        ),
+        sshFailedLog: await exec("grep sshd.*Did /var/log/auth.log | less"),
       });
     } else {
       sendOk(reqEvent, indexHtml);
