@@ -50,8 +50,10 @@ const indexHtml = `<!DOCTYPE html>
 </html>
 `;
 
+const port = parseInt(Deno.env.get("PORT") || "14044", 10);
+
 const server = Deno.listen({
-  port: 14044,
+  port,
 });
 
 for await (const conn of server) {
