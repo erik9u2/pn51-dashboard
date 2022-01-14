@@ -104,6 +104,6 @@ async function exec(cmd: string): Promise<string> {
   if (status.success) {
     return new TextDecoder().decode(await process.output());
   } else {
-    return "-";
+    return `error ${status.code}`;
   }
 }
