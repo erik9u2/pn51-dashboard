@@ -2,7 +2,7 @@
 
 Very basic dashboard for my Asus PN51 home server.
 
-## Prerequisits
+## Prerequisites
 
 Download and install [Deno](https://deno.land/) to /usr/local/bin.
 
