@@ -1,0 +1,11 @@
+[Unit]
+Description=Simple PN51 dashboard.
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/pn51-dashboard
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
