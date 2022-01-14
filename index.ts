@@ -49,36 +49,20 @@ const indexHtml = `<!DOCTYPE html>
 </html>
 `;
 
-const exec = async (cmd: string) => {
-  const process = Deno.run({
-    cmd: ["bash", "-c", cmd],
-    stdout: "piped",
-  });
-  const status = await process.status();
-  if (status.success) {
-    const rawOutput = await process.output();
-    return new TextDecoder().decode(rawOutput);
-  } else {
-    return "-";
-  }
-};
-
-const options = {
+const server = Deno.listen({
   port: 14044,
-};
-
-const server = Deno.listen(options);
+});
 
 for await (const conn of server) {
   serveHttp(conn);
 }
 
-async function serveHttp(conn: Deno.Conn) {
+async function serveHttp(conn: Deno.Conn): Promise<void> {
   const httpConn = Deno.serveHttp(conn);
-  for await (const req of httpConn) {
-    const isDataReq = req.request.url.endsWith("/data");
+  for await (const reqEvent of httpConn) {
+    const isDataReq = reqEvent.request.url.endsWith("/data");
     if (isDataReq) {
-      sendOk(req, {
+      sendOk(reqEvent, {
         uname: await exec("uname -a"),
         uptime: await exec("uptime"),
         cpu: await exec("mpstat"),
@@ -89,19 +73,19 @@ async function serveHttp(conn: Deno.Conn) {
         moneroLog: await exec("tail /var/log/monero/monero.log"),
       });
     } else {
-      sendOk(req, indexHtml);
+      sendOk(reqEvent, indexHtml);
     }
   }
 }
 
 function sendOk(
-  req: Deno.RequestEvent,
+  reqEvent: Deno.RequestEvent,
   dataRaw: string | { [prop: string]: string }
-) {
+): void {
   const isJSON = typeof dataRaw !== "string";
   const body = isJSON ? JSON.stringify(dataRaw) : dataRaw;
   const contentType = isJSON ? "application/json" : "text/html";
-  req.respondWith(
+  reqEvent.respondWith(
     new Response(body, {
       status: 200,
       headers: {
@@ -109,4 +93,17 @@ function sendOk(
       },
     })
   );
+}
+
+async function exec(cmd: string): Promise<string> {
+  const process = Deno.run({
+    cmd: ["bash", "-c", cmd],
+    stdout: "piped",
+  });
+  const status = await process.status();
+  if (status.success) {
+    return new TextDecoder().decode(await process.output());
+  } else {
+    return "-";
+  }
 }
