@@ -62,20 +62,7 @@ async function serveHttp(conn: Deno.Conn): Promise<void> {
   for await (const reqEvent of httpConn) {
     const isDataReq = reqEvent.request.url.endsWith("/data");
     if (isDataReq) {
-      sendOk(reqEvent, {
-        uname: await exec("uname -a"),
-        uptime: await exec("uptime"),
-        cpuUsage: await exec("top -bn1 | grep '%Cpu'"),
-        cpuFrequency: await exec("lscpu | grep MHz"),
-        memoryRamUsage: await exec("free -h"),
-        diskUsage: await exec("df -h"),
-        sensors: await exec("sensors"),
-        moneroLog: await exec("tail /var/log/monero/monero.log"),
-        sshBruteForceLog: await exec(
-          "grep sshd.*Failed /var/log/auth.log | less"
-        ),
-        sshFailedLog: await exec("grep sshd.*Did /var/log/auth.log | less"),
-      });
+      sendOk(reqEvent, await readSystem());
     } else {
       sendOk(reqEvent, indexHtml);
     }
@@ -110,4 +97,19 @@ async function exec(cmd: string): Promise<string> {
   } else {
     return `error ${status.code}`;
   }
+}
+
+async function readSystem() {
+  return {
+    uname: await exec("uname -a"),
+    uptime: await exec("uptime"),
+    cpuUsage: await exec("top -bn1 | grep '%Cpu'"),
+    cpuFrequency: await exec("lscpu | grep MHz"),
+    memoryRamUsage: await exec("free -h"),
+    diskUsage: await exec("df -h"),
+    sensors: await exec("sensors"),
+    moneroLog: await exec("tail /var/log/monero/monero.log"),
+    sshBruteForceLog: await exec("grep sshd.*Failed /var/log/auth.log | less"),
+    sshFailedLog: await exec("grep sshd.*Did /var/log/auth.log | less"),
+  };
 }
