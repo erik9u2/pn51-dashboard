@@ -74,9 +74,9 @@ const indexHtml = `<!DOCTYPE html>
 </html>
 `;
 
-const exec = async (cmd: string[]) => {
+const exec = async (cmd: string) => {
   const process = Deno.run({
-    cmd,
+    cmd: ["bash", "-c", cmd],
     stdout: "piped",
   });
   const status = await process.status();
@@ -100,38 +100,38 @@ for await (const conn of server) {
 
 async function serveHttp(conn: Deno.Conn) {
   const httpConn = Deno.serveHttp(conn);
-  for await (const requestEvent of httpConn) {
-    const isDataReq = requestEvent.request.url.endsWith("/data");
+  for await (const req of httpConn) {
+    const isDataReq = req.request.url.endsWith("/data");
     if (isDataReq) {
-      requestEvent.respondWith(
-        new Response(
-          JSON.stringify({
-            uname: await exec(["uname", "-a"]),
-            uptime: await exec(["uptime"]),
-            cpu: await exec(["mpstat"]),
-            cpufrequency: await exec(["bash", "-c", "lscpu | grep MHz"]),
-            memory: await exec(["free", "-h"]),
-            disk: await exec(["df", "-h"]),
-            sensors: await exec(["sensors"]),
-            monerolog: await exec(["tail", "/var/log/monero/monero.log"]),
-          }),
-          {
-            status: 200,
-            headers: {
-              "content-type": "application/json; charset=UTF-8",
-            },
-          }
-        )
-      );
+      sendOk(req, {
+        uname: await exec("uname -a"),
+        uptime: await exec("uptime"),
+        cpu: await exec("mpstat"),
+        cpufrequency: await exec("lscpu | grep MHz"),
+        memory: await exec("free -h"),
+        disk: await exec("df -h"),
+        sensors: await exec("sensors"),
+        monerolog: await exec("tail /var/log/monero/monero.log"),
+      });
     } else {
-      requestEvent.respondWith(
-        new Response(indexHtml, {
-          status: 200,
-          headers: {
-            "content-type": "text/html; charset=UTF-8",
-          },
-        })
-      );
+      sendOk(req, indexHtml);
     }
   }
+}
+
+function sendOk(
+  req: Deno.RequestEvent,
+  dataRaw: string | { [prop: string]: string }
+) {
+  const isJSON = typeof dataRaw !== "string";
+  const body = isJSON ? JSON.stringify(dataRaw) : dataRaw;
+  const contentType = isJSON ? "application/json" : "text/html";
+  req.respondWith(
+    new Response(body, {
+      status: 200,
+      headers: {
+        "Content-Type": `${contentType}; charset=UTF-8`,
+      },
+    })
+  );
 }
