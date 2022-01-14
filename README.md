@@ -13,6 +13,11 @@ deno run --allow-net --allow-run index.ts
 3. sudo systemctl enable pn51-dashboard
 4. sudo systemctl start pn51-dashboard
 
+## Re-install
+
+1. sudo deno install -f --allow-net --allow-run --root=/usr/local index.ts
+2. sudo systemctl restart pn51-dashboard
+
 ## License
 
 See [LICENSE](LICENSE).
