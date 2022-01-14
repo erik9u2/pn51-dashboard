@@ -67,8 +67,8 @@ async function serveHttp(conn: Deno.Conn): Promise<void> {
         uptime: await exec("uptime"),
         cpuUsage: await exec("top -bn1 | grep '%Cpu'"),
         cpuFrequency: await exec("lscpu | grep MHz"),
-        memory: await exec("free -h"),
-        disk: await exec("df -h"),
+        memoryRamUsage: await exec("free -h"),
+        diskUsage: await exec("df -h"),
         sensors: await exec("sensors"),
         moneroLog: await exec("tail /var/log/monero/monero.log"),
       });
