@@ -23,7 +23,7 @@ const indexHtml = `<!DOCTYPE html>
     </label>
   </main>
   <script>
-    (async () => {
+    document.addEventListener("DOMContentLoaded", () => {
       const refresh = async () => {
         const response = await fetch("/data");
         const json = await response.json();
@@ -43,7 +43,7 @@ const indexHtml = `<!DOCTYPE html>
         setTimeout(refresh, Math.max(defaultTimeout, timeoutInt));
       };
       refresh();
-    })();
+    }, false);
   </script>
 </body>
 </html>
