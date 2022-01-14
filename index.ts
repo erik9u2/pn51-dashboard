@@ -34,6 +34,10 @@ const indexHtml = `<!DOCTYPE html>
       <pre id="cpu"></pre>
     </section>
     <section>
+      <h2>lscpu | grep MHz</h2>
+      <pre id="cpufrequency"></pre>
+    </section>
+    <section>
       <h2>free -h</h2>
       <pre id="memory"></pre>
     </section>
@@ -105,6 +109,7 @@ async function serveHttp(conn: Deno.Conn) {
             uname: await exec(["uname", "-a"]),
             uptime: await exec(["uptime"]),
             cpu: await exec(["mpstat"]),
+            cpufrequency: await exec(["bash", "-c", "lscpu | grep MHz"]),
             memory: await exec(["free", "-h"]),
             disk: await exec(["df", "-h"]),
             sensors: await exec(["sensors"]),
