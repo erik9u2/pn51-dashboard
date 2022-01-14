@@ -65,7 +65,7 @@ async function serveHttp(conn: Deno.Conn): Promise<void> {
       sendOk(reqEvent, {
         uname: await exec("uname -a"),
         uptime: await exec("uptime"),
-        cpu: await exec("mpstat"),
+        cpuUsage: await exec("top -bn1 | grep '%Cpu'"),
         cpuFrequency: await exec("lscpu | grep MHz"),
         memory: await exec("free -h"),
         disk: await exec("df -h"),
