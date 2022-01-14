@@ -21,38 +21,6 @@ const indexHtml = `<!DOCTYPE html>
       Timeout:
       <input value="2000" id="timeout">
     </label>
-    <section>
-      <h2>uname -a</h2>
-      <pre id="uname"></pre>
-    </section>
-    <section>
-      <h2>uptime</h2>
-      <pre id="uptime"></pre>
-    </section>
-    <section>
-      <h2>mpstat</h2>
-      <pre id="cpu"></pre>
-    </section>
-    <section>
-      <h2>lscpu | grep MHz</h2>
-      <pre id="cpufrequency"></pre>
-    </section>
-    <section>
-      <h2>free -h</h2>
-      <pre id="memory"></pre>
-    </section>
-    <section>
-      <h2>df -h</h2>
-      <pre id="disk"></pre>
-    </section>
-    <section>
-      <h2>sensors</h2>
-      <pre id="sensors"></pre>
-    </section>
-    <section>
-      <h2>monero.log</h2>
-      <pre id="monerolog"></pre>
-    </section>
   </main>
   <script>
     (async () => {
@@ -60,7 +28,14 @@ const indexHtml = `<!DOCTYPE html>
         const response = await fetch("/data");
         const json = await response.json();
         for (const key of Object.keys(json)) {
-          document.getElementById(key).innerHTML = json[key];
+          const val = json[key];
+          const el = document.getElementById(key);
+          if (!el) {
+            document.querySelector("main").innerHTML += '<section><h2>' +
+              key + '</h2><pre id="' + key + '">' + val + '</pre></section>';
+          } else {
+            el.innerHTML = json[key];
+          }
         }
         const defaultTimeout = 2000;
         const timeout = document.getElementById("timeout").value;
@@ -107,11 +82,11 @@ async function serveHttp(conn: Deno.Conn) {
         uname: await exec("uname -a"),
         uptime: await exec("uptime"),
         cpu: await exec("mpstat"),
-        cpufrequency: await exec("lscpu | grep MHz"),
+        cpuFrequency: await exec("lscpu | grep MHz"),
         memory: await exec("free -h"),
         disk: await exec("df -h"),
         sensors: await exec("sensors"),
-        monerolog: await exec("tail /var/log/monero/monero.log"),
+        moneroLog: await exec("tail /var/log/monero/monero.log"),
       });
     } else {
       sendOk(req, indexHtml);
