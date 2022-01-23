@@ -134,7 +134,7 @@ async function readSystem() {
     sensors: await exec("sensors"),
     moneroLog: await exec("tail /var/log/monero/monero.log"),
     xmrig: await exec("tail /var/log/xmrig/xmrig.log"),
-    sshBruteForceLog: await exec("grep sshd.*Failed /var/log/auth.log | less"),
-    sshFailedLog: await exec("grep sshd.*Did /var/log/auth.log | less"),
+    sshBruteForceLog: await exec("grep sshd.*Failed /var/log/auth.log | tail"),
+    sshFailedLog: await exec("grep sshd.*Did /var/log/auth.log | tail"),
   };
 }
