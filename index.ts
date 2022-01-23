@@ -136,5 +136,7 @@ async function readSystem() {
     xmrig: await exec("tail /var/log/xmrig/xmrig.log"),
     sshBruteForceLog: await exec("grep sshd.*Failed /var/log/auth.log | tail"),
     sshFailedLog: await exec("grep sshd.*Did /var/log/auth.log | tail"),
+    nginxAccessLog: await exec("tail /var/log/nginx/access.log"),
+    nginxErrorLog: await exec("tail /var/log/nginx/error.log"),
   };
 }
